@@ -14,13 +14,18 @@ namespace T4_POO_2Z_1erParcial_Romeo_Marcos
         public string Apellido { get; set; }
         public decimal Sueldo { get; set; }
         public int Beneficio { get; set; }
-        List<Adelanto> Lista_Adelantos { get; set;}
+        List<Adelanto> Lista_Adelantos = new List<Adelanto>();
 
-        private bool SoloTresAdelantos()
+        public List<Adelanto> DevuelveListaAdelanto()
         {
-            if (Lista_Adelantos.Count > 3)
+            var lista = Lista_Adelantos;
+            return lista;
+        }
+        public bool SoloTresAdelantos()
+        {
+            if (Lista_Adelantos.Count >= 3)
             {
-                MessageBox.Show("Se excede de los adelantos correspondientes", "Atencion",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                MessageBox.Show("Se excede de los tres adelantos correspondientes", "Atencion",MessageBoxButtons.OK,MessageBoxIcon.Information);
                 return false;
             }
             return true;

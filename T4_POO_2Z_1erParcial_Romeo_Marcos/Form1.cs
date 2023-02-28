@@ -14,14 +14,14 @@ namespace T4_POO_2Z_1erParcial_Romeo_Marcos
 {
     public partial class Form1 : Form
     {
-        Operario operario = new Operario();
-        Administrativo administrativo = new Administrativo();
-        Directivo directivo = new Directivo();
+        //Operario operario = new Operario();
+        //Administrativo administrativo = new Administrativo();
+        //Directivo directivo = new Directivo();
 
-        List<Operario> Lista_Operario = new List<Operario>();
-        List<Administrativo> Lista_Administrativo = new List<Administrativo>();
-        List<Directivo> Lista_Directivo = new List<Directivo>();
-        List<Empleado> Lista_Empleado = new List<Empleado>();
+        //List<Operario> Lista_Operario = new List<Operario>();
+        //List<Administrativo> Lista_Administrativo = new List<Administrativo>();
+        //List<Directivo> Lista_Directivo = new List<Directivo>();
+        List<Empleado> Lista_Empleados = new List<Empleado>();
 
         public Form1()
         {
@@ -39,9 +39,9 @@ namespace T4_POO_2Z_1erParcial_Romeo_Marcos
                     empleado.Sueldo = decimal.Parse(Interaction.InputBox("Ingrese Sueldo del Empleado"));
                     empleado.Legajo = ValidaLegajo(Interaction.InputBox("Ingrese Legajo del Empleado"));
                     empleado.SetBeneficio();
-                    Lista_Operario.Add(empleado);
+                    Lista_Empleados.Add(empleado);
                     dgvEmpleado.DataSource = null;
-                    dgvEmpleado.DataSource = Lista_Operario;
+                    dgvEmpleado.DataSource = Lista_Empleados;
                 }
                 else if (rdbAdministrativo.Checked == true)
                 {
@@ -51,9 +51,9 @@ namespace T4_POO_2Z_1erParcial_Romeo_Marcos
                     empleado.Sueldo = decimal.Parse(Interaction.InputBox("Ingrese Sueldo del Empleado"));
                     empleado.Legajo = ValidaLegajo(Interaction.InputBox("Ingrese Legajo del Empleado"));
                     empleado.SetBeneficio();
-                    Lista_Administrativo.Add(empleado);
+                    Lista_Empleados.Add(empleado);
                     dgvEmpleado.DataSource = null;
-                    dgvEmpleado.DataSource = Lista_Administrativo;
+                    dgvEmpleado.DataSource = Lista_Empleados;
 
                 }
                 else if (rdbDirectivo.Checked == true)
@@ -64,9 +64,9 @@ namespace T4_POO_2Z_1erParcial_Romeo_Marcos
                     empleado.Sueldo = decimal.Parse(Interaction.InputBox("Ingrese Sueldo del Empleado"));
                     empleado.Legajo = ValidaLegajo(Interaction.InputBox("Ingrese Legajo del Empleado"));
                     empleado.SetBeneficio();
-                    Lista_Directivo.Add(empleado);
+                    Lista_Empleados.Add(empleado);
                     dgvEmpleado.DataSource = null;
-                    dgvEmpleado.DataSource = Lista_Directivo;
+                    dgvEmpleado.DataSource = Lista_Empleados;
                 }
                 else
                 {
@@ -74,84 +74,59 @@ namespace T4_POO_2Z_1erParcial_Romeo_Marcos
 
                 }
             }
-            catch (IngresoVacio) { MessageBox.Show("Debe seleccionar un tipo de Empleado", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information); }
-            //catch (IngresoVacio) { }
-            //catch (IngresoVacio) { }
-            //catch (IngresoVacio) { }
+            catch (FormatException) { MessageBox.Show("Debe Ingresar un monto para el Sueldo", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+
+            catch (IngresoVacio) when (rdbDirectivo.Checked==false|| rdbOperario.Checked==false|| rdbAdministrativo.Checked==false) { MessageBox.Show("Debe seleccionar un tipo de Empleado", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+
+            catch (IngresoVacio) when ((Interaction.InputBox("Ingrese Apellido del Empleado")).Length == 0) { MessageBox.Show("Debe ingresar un Apellido", "Atencion", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
         }
 
 
         private void btnAsignar_Click(object sender, EventArgs e)
         {
-
+            try
+            {
+                Empleado aux = (Empleado)(dgvEmpleado.SelectedRows[0].DataBoundItem);
+                CreaAdelanto(aux);
+            }
+            catch (ArgumentOutOfRangeException) { MessageBox.Show("Debe seleccionar un Empleado", "Atencion", MessageBoxButtons.OK, MessageBoxIcon.Information); }
 
         }
         private string ValidaLegajo(string pLegajo)
         {
             string Legajo = pLegajo;
 
-            foreach (var l in Lista_Operario)
+            foreach (var l in Lista_Empleados)
             {
                 if (l.Legajo == Legajo)
                 {
-                    MessageBox.Show("Legajo existente","Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-                }
-            }
-            foreach (var l in Lista_Administrativo)
-            {
-                if (l.Legajo == Legajo)
-                {
-                    MessageBox.Show("Legajo existente");
-
-                }
-            }
-            foreach (var l in Lista_Directivo)
-            {
-                if (l.Legajo == Legajo)
-                {
-                    MessageBox.Show("Legajo existente");
+                    MessageBox.Show("Legajo existente", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                 }
             }
             return Legajo;
         }
 
-        private string ValidaLegajoAd(string pLegajo)
+        private void CreaAdelanto(Empleado pEmpleado)
         {
-            string Legajo = pLegajo;
-
-            foreach (var l in Lista_Administrativo)
+            try
             {
-                if (l.Legajo == Legajo)
+                if (pEmpleado.SoloTresAdelantos())
                 {
-                    MessageBox.Show("Legajo existente");
-
+                    Adelanto adelanto = new Adelanto();
+                    if (adelanto.AsignaMonto(pEmpleado))
+                    {
+                        pEmpleado.DevuelveListaAdelanto().Add(adelanto);
+                        dgvAdelantoEmpleado.DataSource = null;
+                        dgvAdelantoEmpleado.DataSource = pEmpleado.DevuelveListaAdelanto();
+                    }
                 }
             }
-            foreach (var l in Lista_Directivo)
+            catch (Exception)
             {
-                if (l.Legajo == Legajo)
-                {
-                    MessageBox.Show("Legajo existente");
 
-                }
+                throw;
             }
-            return Legajo;
-        }
-        private string ValidaLegajoDir(string pLegajo)
-        {
-            string Legajo = pLegajo;
-
-            foreach (var l in Lista_Directivo)
-            {
-                if (l.Legajo == Legajo)
-                {
-                    MessageBox.Show("Legajo existente");
-
-                }
-            }
-            return Legajo;
         }
 
         public class IngresoVacio : Exception
@@ -165,5 +140,11 @@ namespace T4_POO_2Z_1erParcial_Romeo_Marcos
             Close();
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            dgvEmpleado.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvAdelanto.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvAdelantoEmpleado.ReadOnly = false;
+        }
     }
 }

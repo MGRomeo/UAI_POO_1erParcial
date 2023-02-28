@@ -274,6 +274,7 @@
             this.Controls.Add(this.dgvEmpleado);
             this.Name = "Form1";
             this.Text = "Sistema Adelantos";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvEmpleado)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAdelanto)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAdelantoEmpleado)).EndInit();
